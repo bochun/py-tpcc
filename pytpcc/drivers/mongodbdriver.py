@@ -31,6 +31,7 @@
 
 from __future__ import with_statement
 
+import os
 import sys
 import json
 import logging
@@ -226,7 +227,17 @@ class MongodbDriver(AbstractDriver):
         self.secondary_reads = False
         self.retry_writes = True
         self.read_concern = "majority"
-        self.write_concern = pymongo.write_concern.WriteConcern(w="majority", wtimeout=30000, j=True)
+        self.writeconcern_level = os.environ['WRITECONCERN_LEVEL']
+        self.journal_flag = os.environ["JOURNAL_FLAG"]
+
+        if self.journal_flag == 'False':
+            self.journal_flag = False
+        elif self.journal_flag == 'True':
+            self.journal_flag = True
+
+        self.write_concern = pymongo.write_concern.WriteConcern(w=self.writeconcern_level,
+                                                                wtimeout=30000,
+                                                                j=self.journal_flag)
         self.denormalize = True
         self.output = open('results.json','a')
         self.result_doc = {}
@@ -269,9 +280,10 @@ class MongodbDriver(AbstractDriver):
         if self.secondary_reads:
             self.read_preference = "nearest"
 
-        if 'write_concern' in config and config['write_concern'] and config['write_concern'] != '1':
+        #if 'write_concern' in config and config['write_concern'] and config['write_concern'] != '1':
             # only expecting string 'majority' as an alternative to w:1
-            self.write_concern = pymongo.write_concern.WriteConcern(w=str(config['write_concern']), wtimeout=30000)
+            #self.write_concern = pymongo.write_concern.WriteConcern(w=str(config['write_concern']), wtimeout=30000)
+
 
         # handle building connection string
         userpassword = ""

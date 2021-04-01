@@ -209,10 +209,22 @@ if __name__ == '__main__':
                          help='Print out the default configuration file for the system and exit')
     aparser.add_argument('--debug', action='store_true',
                          help='Enable debug log messages')
+    aparser.add_argument('--writeconcern_level',
+                         help='writeconcern level', default='1')
+    aparser.add_argument('--journal_flag',
+                         help='journal level', default='False')
     args = vars(aparser.parse_args())
 
     if args['debug']:
         logging.getLogger().setLevel(logging.DEBUG)
+
+    if args['writeconcern_level']:
+        writeconcern_level = args["writeconcern_level"]
+        os.environ["WRITECONCERN_LEVEL"] = writeconcern_level
+
+    if args['journal_flag']:
+        journal_flag = args["journal_flag"]
+        os.environ["JOURNAL_FLAG"] = journal_flag
 
     ## Create a handle to the target client driver
     driverClass = createDriverClass(args['system'])
