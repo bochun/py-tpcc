@@ -228,6 +228,8 @@ class MongodbDriver(AbstractDriver):
         self.retry_writes = True
         self.read_concern = "majority"
         self.writeconcern_level = os.environ['WRITECONCERN_LEVEL']
+        if self.writeconcern_level == '1':
+            self.writeconcern_level = int(self.writeconcern_level)
         self.journal_flag = os.environ["JOURNAL_FLAG"]
 
         if self.journal_flag == 'False':
