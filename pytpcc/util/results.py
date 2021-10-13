@@ -138,7 +138,7 @@ class Results:
         for txn in sorted(self.txn_counters.keys()):
             txn_time = self.txn_times[txn]
             txn_cnt = self.txn_counters[txn]
-            rate = u"%.02f txn/s" % ((txn_cnt / duration))
+            rate = u" %.02f txn/s" % ((txn_cnt / duration))
             #avg_latency = u"%.03f sec" % ((txn_cnt / txn_time))
             ret += f % (txn, str(txn_cnt), str(round(txn_time * 1000000,3)), rate)
             total_time += txn_time
